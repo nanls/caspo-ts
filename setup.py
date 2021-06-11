@@ -1,7 +1,7 @@
 
 from setuptools import find_packages, setup
 
-version = "0.3"
+version = "own"
 
 setup(
     name="caspots",

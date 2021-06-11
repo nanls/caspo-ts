@@ -71,7 +71,7 @@ class Graph(nx.MultiDiGraph):
         edges = [(source, target, {'sign': sign})
                  for _, source, sign, target in df.itertuples()]
         print(edges)
-        return cls(data=edges)
+        return cls(incoming_graph_data=edges)
 
     def predecessors(self, node, exclude_compressed=True):
         """

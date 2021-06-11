@@ -16,16 +16,16 @@
 # along with caspo.  If not, see <http://www.gnu.org/licenses/>.import random
 # -*- coding: utf-8 -*-
 
+import itertools as it
 from collections import defaultdict
 
-import itertools as it
+import clingo
 import pandas as pd
 
-import clingo
-
-from .literal import Literal
 from .clause import Clause
-from .mapping import MappingList, Mapping
+from .literal import Literal
+from .mapping import Mapping, MappingList
+
 
 class HyperGraph(object):
     """
@@ -71,7 +71,8 @@ class HyperGraph(object):
         self.clauses = {}
         self.clauses_idx = {}
         for i, h in self.edges.groupby('hyper_idx'):
-            literals = [Literal(source, sign) for _, source, sign in h.itertuples(index=False)]
+            literals = [Literal(source, sign)
+                        for _, source, sign in h.itertuples(index=False)]
             clause = Clause(literals)
 
             self.clauses[i] = clause
@@ -140,7 +141,7 @@ class HyperGraph(object):
             if length > 0:
                 l = min(length, l)
 
-            for literals in it.chain.from_iterable(it.combinations(preds, r+1) for r in xrange(l)):
+            for literals in it.chain.from_iterable(it.combinations(preds, r + 1) for r in xrange(l)):
                 valid = defaultdict(int)
                 for source, _, _ in literals:
                     valid[source] += 1
@@ -177,7 +178,8 @@ class HyperGraph(object):
             fs.add(clingo.Function('node', [n, i]))
 
         for j, i in self.hyper.iteritems():
-            fs.add(clingo.Function('hyper', [i, j, len(self.edges[self.edges.hyper_idx == j])]))
+            fs.add(clingo.Function(
+                'hyper', [i, j, len(self.edges[self.edges.hyper_idx == j])]))
 
         for j, v, s in self.edges.itertuples(index=False):
             fs.add(clingo.Function('edge', [j, v, s]))

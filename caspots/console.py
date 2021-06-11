@@ -26,6 +26,8 @@ from .utils import *
 
 def read_pkn(args):
     graph = Graph.read_sif(args.pkn)
+    print("in read_pkn")
+    print(graph)
     hypergraph = HyperGraph.from_graph(graph)
     return graph, hypergraph
 

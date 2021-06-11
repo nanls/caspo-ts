@@ -66,8 +66,11 @@ class Graph(nx.MultiDiGraph):
         """
         df = pd.read_csv(path, delim_whitespace=True, names=[
                          'source', 'sign', 'target']).drop_duplicates()
+        print("in read sif")
+        print(df)
         edges = [(source, target, {'sign': sign})
                  for _, source, sign, target in df.itertuples()]
+        print(edges)
         return cls(data=edges)
 
     def predecessors(self, node, exclude_compressed=True):

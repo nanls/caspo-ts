@@ -33,6 +33,10 @@ from .networks import *
 
 
 #print (contraintonexp)
+
+print("ici")
+
+
 def crunch_data(answer, predicate, factor):
     factor = float(factor)
     data = {
@@ -261,6 +265,10 @@ class ASPSolver:
         control.configuration.solve.project = "project"  # ????
         control.configuration.solve.models = limit  # ????
         # print control.conf.solver[0].keys()
+
+        print("##############################################################")
+        print("do_mincard", do_mincard)
+        print("do_subsets", do_subsets)
 
         if do_mincard:
             if self.opts.force_size:

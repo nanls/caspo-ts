@@ -70,6 +70,11 @@ class HyperGraph(object):
 
         self.clauses = {}
         self.clauses_idx = {}
+
+        print(self.nodes)
+        print(self.hyper)
+        print(self.edges)
+
         for i, h in self.edges.groupby('hyper_idx'):
             literals = [Literal(source, sign)
                         for _, source, sign in h.itertuples(index=False)]

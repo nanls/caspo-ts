@@ -17,8 +17,10 @@
 # -*- coding: utf-8 -*-
 
 import itertools as it
-import pandas as pd
+
 import networkx as nx
+import pandas as pd
+
 
 class Graph(nx.MultiDiGraph):
     """
@@ -62,8 +64,10 @@ class Graph(nx.MultiDiGraph):
 
         .. _simple interaction format (SIF): http://wiki.cytoscape.org/Cytoscape_User_Manual/Network_Formats
         """
-        df = pd.read_csv(path, delim_whitespace=True, names=['source', 'sign', 'target']).drop_duplicates()
-        edges = [(source, target, {'sign': sign}) for _, source, sign, target in df.itertuples()]
+        df = pd.read_csv(path, delim_whitespace=True, names=[
+                         'source', 'sign', 'target']).drop_duplicates()
+        edges = [(source, target, {'sign': sign})
+                 for _, source, sign, target in df.itertuples()]
         return cls(data=edges)
 
     def predecessors(self, node, exclude_compressed=True):
@@ -129,7 +133,8 @@ class Graph(nx.MultiDiGraph):
         designated = set(setup.nodes)
         zipped = self.copy()
 
-        marked = [(n, d) for n, d in self.nodes(data=True) if n not in designated and not d.get('compressed', False)]
+        marked = [(n, d) for n, d in self.nodes(data=True)
+                  if n not in designated and not d.get('compressed', False)]
         while marked:
             for node, _ in sorted(marked):
                 backward = zipped.predecessors(node)
@@ -144,9 +149,11 @@ class Graph(nx.MultiDiGraph):
                 else:
                     designated.add(node)
 
-            marked = [(n, d) for n, d in self.nodes(data=True) if n not in designated and not d.get('compressed', False)]
+            marked = [(n, d) for n, d in self.nodes(data=True)
+                      if n not in designated and not d.get('compressed', False)]
 
-        not_compressed = [(n, d) for n, d in zipped.nodes(data=True) if not d.get('compressed', False)]
+        not_compressed = [(n, d) for n, d in zipped.nodes(
+            data=True) if not d.get('compressed', False)]
         return zipped.subgraph([n for n, _ in not_compressed])
 
     def __merge_source_targets(self, node, zipped):
@@ -156,7 +163,8 @@ class Graph(nx.MultiDiGraph):
             if predecessor:
                 for source_edge in zipped[predecessor[0]][node].itervalues():
                     for target_edge in zipped[node][target].itervalues():
-                        sign = {'sign': source_edge['sign']*target_edge['sign']}
+                        sign = {
+                            'sign': source_edge['sign'] * target_edge['sign']}
                         if not zipped.has_edge(predecessor[0], target) or sign not in zipped[predecessor[0]][target].values():
                             edges.append((predecessor[0], target, sign))
 
@@ -170,9 +178,11 @@ class Graph(nx.MultiDiGraph):
             if successor:
                 for target_edge in zipped[source][node].itervalues():
                     for source_edge in zipped[node][successor[0]].itervalues():
-                        sign = {'sign': target_edge['sign']*source_edge['sign']}
+                        sign = {
+                            'sign': target_edge['sign'] * source_edge['sign']}
                         if not zipped.has_edge(source, successor[0]) or sign not in zipped[source][successor[0]].values():
-                            edges.append((source, successor[0], {'sign': target_edge['sign']*source_edge['sign']}))
+                            edges.append(
+                                (source, successor[0], {'sign': target_edge['sign'] * source_edge['sign']}))
 
         self.node[node]['compressed'] = zipped.node[node]['compressed'] = True
         zipped.add_edges_from(edges)
